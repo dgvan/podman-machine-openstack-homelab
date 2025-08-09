@@ -1,0 +1,21 @@
+kolla_base_distro: "ubuntu"
+kolla_install_type: "source"
+network_interface: "eth0"
+neutron_external_interface: "eth1"
+
+enable_cinder: "yes"
+enable_cinder_backend_ceph: "yes"
+enable_glance_backend_ceph: "yes"
+enable_manila: "yes"
+enable_manila_backend_cephfs_native: "yes"
+
+enable_ceilometer: "yes"
+enable_aodh: "yes"
+enable_gnocchi: "yes"
+
+enable_octavia: "yes"
+enable_heat: "yes"
+
+glance_backend_ceph: "yes"
+cinder_backend_ceph: "yes"
+manila_backend_cephfs_native: "yes"
