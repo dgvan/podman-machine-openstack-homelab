@@ -14,8 +14,7 @@ COPY multinode /etc/kolla/multinode
 COPY globals.yml /etc/kolla/globals.yml
 
 RUN mkdir -p /etc/kolla/config && \
-  cp -r /usr/local/share/kolla-ansible/etc_examples/kolla/* /etc/kolla/ && \
-  kolla-genpwd
+  cp -r /usr/local/share/kolla-ansible/etc_examples/kolla/* /etc/kolla/
 
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/sbin/init"]

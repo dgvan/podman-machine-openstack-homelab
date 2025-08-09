@@ -1,0 +1,11 @@
+variant: fcos
+version: 1.6.0
+passwd:
+  users:
+    - name: dungvan
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCtVrQSR0RcrRT5jQEgHbevNeLVcIoFEm3pPHTB2SweFoBLNys5VCy3H0nba5cqIj7q+jnKGYhwbtXGbfnJKFktWTfTaHSSdsZhlggSKe2xBcgnXkiyuRcmXnhqkPbAfNX1FEF2TLd7sM5N6VjjVXgfusVaApO0HrTH8OkjGr2hPadlq5rdNtYF5LocpafCXyLM7VjKGmFwcAnHMVbbWPbMVfjLHtnjfc2ezxGSbMBlX4A7XGc57k6/3URC3D3NBhfg0/DQY3kbOB1FfqfiP/0Id9OYMhVhCtrgZ/hd538LT/n8fbXbh12fBA2Y1zAzGAegr/GEtIJ5XUDelBO4KV5MOAyw9ZCgrXUu3F9+ifVHN5jLZtMbpjKURIRWMyECOngLF5Tinnb59eascOh+vCg2hys7fNd4oqRovTsxiVb2sSRQ5bnJYiNwlZH2qy2AW0gWMsTv4UXCFMdRM7lH/36n9Vr/8SHMm1GFzilyDIem/ADDonBnClDfE8c1Wy01qbGCY3EA1aoChN3eD28g0wIaUByuvGRjY7VjmvnB6RVpbMGX0z5X2/w98dhDb6JvcaWiPo4SonW+rF145ybs4yaRBqE7Baefb7BXVpFlVsh6axs/59jbSBHTyAapCoUrUokOJY80qs1wuOk0olmA9kg4i8x/KV4qJsQy3WwilxwaTw== dungvan2512@gmail.com
+      groups:
+        - wheel
+        - plugdev
+      shell: /bin/bash

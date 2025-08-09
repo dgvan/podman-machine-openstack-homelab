@@ -53,9 +53,11 @@ chmod +x /root/start-ceph-osds.sh &&
 # Step 5: Deploy OpenStack with Kolla Ansible
 echo "[+] Deploying OpenStack..."
 podman exec controller bash -c "
-kolla-ansible -i /etc/kolla/multinode bootstrap-servers &&
-kolla-ansible -i /etc/kolla/multinode prechecks &&
-kolla-ansible -i /etc/kolla/multinode deploy &&
+ansible-galaxy install -r /usr/local/share/kolla-ansible/requirements.yml &&
+kolla-genpwd &&
+kolla-ansible bootstrap-servers -i /etc/kolla/multinode &&
+kolla-ansible prechecks -i /etc/kolla/multinode &&
+kolla-ansible deploy -i /etc/kolla/multinode &&
 kolla-ansible post-deploy
 "
 
