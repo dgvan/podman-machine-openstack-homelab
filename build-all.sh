@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
-podman build -t openstack-controller ./controller
-podman build -t openstack-compute ./compute
-podman build -t openstack-storage ./storage
+podman build -t openstack-controller -f ./controller/Containerfile .
+podman build -t openstack-compute -f ./compute/Containerfile .
+podman build -t openstack-storage -f ./storage/Containerfile .

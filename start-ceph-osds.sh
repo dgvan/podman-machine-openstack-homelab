@@ -1,10 +1,47 @@
 #!/bin/bash
-# Run this inside the storage container
 set -e
-for i in 1 2 3; do
-  fallocate -l 5G /var/lib/ceph-osd-$i.img
-  losetup /dev/loop$i /var/lib/ceph-osd-$i.img
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 <number_of_loops>"
+  exit 1
+fi
+
+NUM_LOOPS=$1
+
+# Load loop module if not loaded
+if ! lsmod | grep -q '^loop'; then
+  echo "Loading loop module..."
+  modprobe loop
+fi
+
+for ((i=1; i<=NUM_LOOPS; i++)); do
+  IMAGE="/var/lib/ceph${i}.img"
+  LOOPDEV="/dev/loop${i}"
+
+  if [ ! -f "$IMAGE" ]; then
+    echo "Image file $IMAGE does not exist, skipping."
+    continue
+  fi
+
+  # Create loop device node if missing
+  if [ ! -e "$LOOPDEV" ]; then
+    echo "$LOOPDEV does not exist, creating..."
+    mknod $LOOPDEV b 7 $i
+    chmod 660 $LOOPDEV
+    chown root:disk $LOOPDEV || true
+  fi
+
+  # Detach if loop device is busy
+  if losetup $LOOPDEV &>/dev/null; then
+    echo "$LOOPDEV is already in use, detaching..."
+    losetup -d $LOOPDEV
+  fi
+
+  # Setup loop device with image
+  echo "Setting up $LOOPDEV with $IMAGE"
+  losetup $LOOPDEV $IMAGE
+
 done
-ceph-volume lvm create --data /dev/loop1
-ceph-volume lvm create --data /dev/loop2
-ceph-volume lvm create --data /dev/loop3
+
+echo "All loop devices setup."
+losetup -a | grep "/var/lib/ceph"

@@ -4,11 +4,13 @@ STOPSIGNAL SIGRTMIN+3
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y systemd systemd-sysv python3-pip python3-dev \
-    libffi-dev gcc libssl-dev python3-venv ssh git vim iproute2 \
-    ceph ceph-mds ceph-common && \
-    pip install --no-cache-dir ansible && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+  apt-get install -y systemd systemd-sysv python3-pip python3-dev \
+  libffi-dev gcc libssl-dev python3-venv ssh git vim iproute2 \
+  ceph ceph-mds ceph-common kmod && \
+  pip install --no-cache-dir ansible && \
+  apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY start-ceph-osds.sh /root/start-ceph-osds.sh
 
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/sbin/init"]
