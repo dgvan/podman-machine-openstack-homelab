@@ -1,3 +1,4 @@
+
 #!/bin/bash
 set -e
 
@@ -7,9 +8,9 @@ GATEWAY="192.168.2.253"
 PARENT_IFACE="eth0" # change if different
 
 # Step 1: Create ipvlan network if missing
-if ! podman network exists $NETWORK_NAME; then
+if ! sudo podman network exists $NETWORK_NAME; then
   echo "[+] Creating Podman ipvlan network..."
-  podman network create \
+  sudo podman network create \
     --driver ipvlan \
     --subnet $SUBNET \
     --gateway $GATEWAY \
@@ -17,42 +18,48 @@ if ! podman network exists $NETWORK_NAME; then
     $NETWORK_NAME
 fi
 
-# Step 2: Start containers
+# Step 2: Load loop module if not loaded
+echo "[+] Loading loop module..."
+if ! lsmod | grep -q '^loop'; then
+  sudo modprobe loop
+fi
+
+# Step 3: Start containers
 echo "[+] Starting containers..."
-podman run -d --name controller --hostname controller \
+sudo podman run -d --name controller --hostname controller \
   --network $NETWORK_NAME --ip 192.168.2.101 \
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
   --privileged --systemd=always openstack-controller:latest
 
-podman run -d --name compute1 --hostname compute1 \
+sudo podman run -d --name compute1 --hostname compute1 \
   --network $NETWORK_NAME --ip 192.168.2.111 \
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
   --privileged --systemd=always openstack-compute:latest
 
-podman run -d --name compute2 --hostname compute2 \
+sudo podman run -d --name compute2 --hostname compute2 \
   --network $NETWORK_NAME --ip 192.168.2.112 \
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
   --privileged --systemd=always openstack-compute:latest
 
-podman run -d --name storage --hostname storage \
+sudo podman run -d --name storage --hostname storage \
   --network $NETWORK_NAME --ip 192.168.2.116 \
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
   --privileged --systemd=always openstack-storage:latest
 
-# Step 3: Wait for systemd boot inside containers
+# Step 4: Wait for systemd boot inside containers
 echo "[+] Waiting for containers to be ready..."
 sleep 20
 
-# Step 4: Prepare Ceph OSDs inside storage node
+# Step 5: Prepare Ceph OSDs inside storage node
 echo "[+] Preparing Ceph OSDs..."
-podman exec storage bash -c "
+sudo podman exec storage bash -c "
 chmod +x /root/start-ceph-osds.sh &&
 /root/start-ceph-osds.sh 3
 "
 
-# Step 5: Deploy OpenStack with Kolla Ansible
+# Step 6: Deploy OpenStack with Kolla Ansible
 echo "[+] Deploying OpenStack..."
-podman exec controller bash -c "
+sudo podman exec controller bash -c "
 ansible-galaxy install -r /usr/local/share/kolla-ansible/requirements.yml &&
 kolla-genpwd &&
 kolla-ansible bootstrap-servers -i /etc/kolla/multinode &&

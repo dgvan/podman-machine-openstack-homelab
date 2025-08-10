@@ -8,19 +8,13 @@ fi
 
 NUM_LOOPS=$1
 
-# Load loop module if not loaded
-if ! lsmod | grep -q '^loop'; then
-  echo "Loading loop module..."
-  modprobe loop
-fi
-
 for ((i=1; i<=NUM_LOOPS; i++)); do
   IMAGE="/var/lib/ceph${i}.img"
   LOOPDEV="/dev/loop${i}"
 
   if [ ! -f "$IMAGE" ]; then
-    echo "Image file $IMAGE does not exist, skipping."
-    continue
+    echo "Image file $IMAGE does not exist, creating."
+    truncate -s 10G $IMAGE
   fi
 
   # Create loop device node if missing

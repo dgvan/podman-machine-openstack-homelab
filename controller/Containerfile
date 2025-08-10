@@ -5,16 +5,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
   apt-get install -y systemd systemd-sysv python3-pip python3-dev \
-  libffi-dev gcc libssl-dev python3-venv ssh git vim iproute2 \
-  ceph-common && \
-  pip install --no-cache-dir ansible kolla-ansible && \
+  libffi-dev gcc libssl-dev python3-venv ssh git vim iproute2 && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
-
-COPY multinode /etc/kolla/multinode
-COPY globals.yml /etc/kolla/globals.yml
-
-RUN mkdir -p /etc/kolla/config && \
-  cp -r /usr/local/share/kolla-ansible/etc_examples/kolla/* /etc/kolla/
 
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/sbin/init"]
