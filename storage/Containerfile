@@ -1,15 +1,13 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 ENV container podman
 STOPSIGNAL SIGRTMIN+3
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
   apt-get install -y systemd systemd-sysv python3-pip python3-dev \
-  libffi-dev gcc libssl-dev python3-venv ssh git vim iproute2 \
-  ceph ceph-mds ceph-common kmod && \
+  libffi-dev gcc libssl-dev python3-venv ssh git vim iproute2 sudo && \
+  echo "root ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
-
-COPY start-ceph-osds.sh /root/start-ceph-osds.sh
 
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/sbin/init"]

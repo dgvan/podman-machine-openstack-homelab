@@ -19,3 +19,5 @@ enable_heat: "yes"
 glance_backend_ceph: "yes"
 cinder_backend_ceph: "yes"
 manila_backend_cephfs_native: "yes"
+
+kolla_container_engine: "podman"
